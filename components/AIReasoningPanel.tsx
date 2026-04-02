@@ -1,4 +1,4 @@
-import { AlertCircle, Zap, Lightbulb, CheckCircle, ArrowRight, Brain } from 'lucide-react'
+import { CircleAlert as AlertCircle, Zap, Lightbulb, CircleCheck as CheckCircle, ArrowRight, Brain } from 'lucide-react'
 
 interface AIReasoningPanelProps {
   reasoning: string
@@ -82,42 +82,42 @@ export default function AIReasoningPanel({ reasoning }: AIReasoningPanelProps) {
   const sections = parseReasoningContent(reasoning)
 
   return (
-    <div className="bg-white border border-slate-200 rounded-lg shadow-sm flex flex-col h-full overflow-hidden">
+    <div className="bg-slate-900 border border-slate-800 rounded-lg flex flex-col h-full overflow-hidden">
       {/* Enhanced Panel Header */}
-      <div className="border-b border-slate-200 px-4 py-4 bg-gradient-to-r from-slate-50 to-transparent">
+      <div className="border-b border-slate-800 px-4 py-3 bg-slate-800">
         <div className="flex items-center gap-2">
-          <Brain className="w-5 h-5 text-slate-700" />
+          <Brain className="w-4 h-4 text-blue-400" />
           <div>
-            <h3 className="text-sm font-bold text-slate-900">AI Reasoning Summary</h3>
+            <h3 className="text-xs font-bold text-slate-200 uppercase tracking-wide">AI Reasoning Summary</h3>
             <p className="text-xs text-slate-500 mt-0.5">Detailed analysis and remediation guidance</p>
           </div>
         </div>
       </div>
 
       {/* Panel Body with Cards */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+      <div className="flex-1 overflow-y-auto px-3 py-3 space-y-2.5">
         {sections.length > 0 ? (
           sections.map((section, idx) => (
             <div
               key={idx}
-              className={`border rounded-lg p-3.5 transition-all hover:shadow-md ${section.bgColor}`}
+              className="border border-slate-700 rounded-lg p-3 transition-all hover:border-slate-600 bg-slate-800"
             >
               {/* Section Header */}
-              <div className="flex items-start gap-2.5 mb-2.5">
+              <div className="flex items-start gap-2 mb-2">
                 <div className={`flex-shrink-0 mt-0.5 ${section.color}`}>
                   {section.icon}
                 </div>
-                <h4 className="text-xs font-semibold text-slate-900">{section.title}</h4>
+                <h4 className="text-xs font-semibold text-slate-200">{section.title}</h4>
               </div>
 
               {/* Section Content */}
-              <p className="text-xs text-slate-700 leading-relaxed ml-7 whitespace-pre-wrap break-words">
+              <p className="text-xs text-slate-400 leading-relaxed ml-6 whitespace-pre-wrap break-words">
                 {section.content}
               </p>
             </div>
           ))
         ) : (
-          <div className="flex items-center justify-center h-40 text-slate-400">
+          <div className="flex items-center justify-center h-40 text-slate-600">
             <p className="text-xs">No reasoning available yet. Run a prediction to see analysis.</p>
           </div>
         )}

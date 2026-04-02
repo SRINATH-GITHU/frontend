@@ -34,17 +34,17 @@ export default function IncidentTable({ incidents }: IncidentTableProps) {
   }
 
   return (
-    <div className="bg-white border border-slate-200 rounded-lg shadow-sm flex flex-col overflow-hidden">
+    <div className="bg-slate-900 border border-slate-800 rounded-lg flex flex-col overflow-hidden h-full">
       {/* Table Tools */}
-      <div className="flex items-center gap-3 px-3.5 py-3 border-b border-slate-200 bg-white">
-        <h3 className="text-xs font-bold text-slate-800">Similar Incidents</h3>
+      <div className="flex items-center gap-3 px-4 py-3 border-b border-slate-800 bg-slate-800">
+        <h3 className="text-xs font-bold text-slate-200 uppercase tracking-wide">Similar Incidents</h3>
         <div className="flex-1 relative">
           <input
             type="text"
-            placeholder="Search incidents by ID, location, or category..."
+            placeholder="Search by ID, location, or category..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-2.5 py-1.5 border border-slate-200 rounded-lg bg-slate-50 text-xs outline-none focus:border-blue-300 focus:bg-blue-50"
+            className="w-full px-2.5 py-1.5 border border-slate-700 rounded-lg bg-slate-900 text-xs text-slate-300 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder:text-slate-600"
           />
         </div>
       </div>
@@ -54,27 +54,27 @@ export default function IncidentTable({ incidents }: IncidentTableProps) {
         <table className="w-full border-collapse text-xs">
           <thead>
             <tr>
-              <th className="text-left px-3.5 py-2.5 bg-slate-50 border-b border-slate-200 font-bold text-slate-500 whitespace-nowrap">
-                Incident ID
+              <th className="text-left px-3 py-2.5 bg-slate-800 border-b border-slate-700 font-bold text-slate-400 whitespace-nowrap sticky top-0">
+                ID
               </th>
-              <th className="text-left px-3.5 py-2.5 bg-slate-50 border-b border-slate-200 font-bold text-slate-500 whitespace-nowrap">
+              <th className="text-left px-3 py-2.5 bg-slate-800 border-b border-slate-700 font-bold text-slate-400 whitespace-nowrap sticky top-0">
                 Location
               </th>
-              <th className="text-left px-3.5 py-2.5 bg-slate-50 border-b border-slate-200 font-bold text-slate-500 whitespace-nowrap">
+              <th className="text-left px-3 py-2.5 bg-slate-800 border-b border-slate-700 font-bold text-slate-400 whitespace-nowrap sticky top-0">
                 Category
               </th>
-              <th className="text-left px-3.5 py-2.5 bg-slate-50 border-b border-slate-200 font-bold text-slate-500 whitespace-nowrap">
-                Similarity
+              <th className="text-left px-3 py-2.5 bg-slate-800 border-b border-slate-700 font-bold text-slate-400 whitespace-nowrap sticky top-0">
+                Match
               </th>
-              <th className="text-left px-3.5 py-2.5 bg-slate-50 border-b border-slate-200 font-bold text-slate-500 whitespace-nowrap">
-                Status
+              <th className="text-left px-3 py-2.5 bg-slate-800 border-b border-slate-700 font-bold text-slate-400 whitespace-nowrap sticky top-0">
+
               </th>
             </tr>
           </thead>
           <tbody>
             {filteredIncidents.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-3.5 py-6 text-center text-slate-500">
+                <td colSpan={5} className="px-3 py-6 text-center text-slate-600">
                   No incidents found
                 </td>
               </tr>
@@ -105,60 +105,60 @@ function IncidentRow({
   onToggle: () => void
 }) {
   const getCategoryBadgeColor = (category: string) => {
-    if (category.includes('WAN')) return 'bg-indigo-100 border-indigo-300 text-indigo-700'
-    if (category.includes('Network')) return 'bg-blue-100 border-blue-300 text-blue-700'
-    if (category.includes('Server')) return 'bg-purple-100 border-purple-300 text-purple-700'
-    return 'bg-slate-100 border-slate-300 text-slate-700'
+    if (category.includes('WAN')) return 'bg-blue-900 border-blue-700 text-blue-300'
+    if (category.includes('Network')) return 'bg-cyan-900 border-cyan-700 text-cyan-300'
+    if (category.includes('Server')) return 'bg-emerald-900 border-emerald-700 text-emerald-300'
+    return 'bg-slate-700 border-slate-600 text-slate-300'
   }
 
   const getSimilarityColor = (score: number) => {
-    if (score >= 0.9) return 'text-green-600'
-    if (score >= 0.7) return 'text-blue-600'
-    return 'text-slate-600'
+    if (score >= 0.9) return 'text-emerald-400'
+    if (score >= 0.7) return 'text-blue-400'
+    return 'text-slate-500'
   }
 
   return (
     <>
       <tr
         onClick={onToggle}
-        className="border-b border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors"
+        className="border-b border-slate-800 hover:bg-slate-800 cursor-pointer transition-colors"
       >
-        <td className="px-3.5 py-3 text-slate-800 font-semibold">{incident.incident_id}</td>
-        <td className="px-3.5 py-3 text-slate-700">{incident.location}</td>
-        <td className="px-3.5 py-3">
+        <td className="px-3 py-2.5 text-slate-300 font-medium">{incident.incident_id}</td>
+        <td className="px-3 py-2.5 text-slate-400">{incident.location}</td>
+        <td className="px-3 py-2.5">
           <span
-            className={`inline-flex px-2 py-1 rounded-full border text-xs font-bold ${getCategoryBadgeColor(incident.noc_category)}`}
+            className={`inline-flex px-2 py-0.5 rounded-md border text-xs font-semibold ${getCategoryBadgeColor(incident.noc_category)}`}
           >
             {incident.noc_category}
           </span>
         </td>
-        <td className={`px-3.5 py-3 font-bold ${getSimilarityColor(incident.similarity_score)}`}>
+        <td className={`px-3 py-2.5 font-bold ${getSimilarityColor(incident.similarity_score)}`}>
           {incident.similarity_pct || Math.round(incident.similarity_score * 100) + '%'}
         </td>
-        <td className="px-3.5 py-3">
-          <span className="text-slate-500">{isExpanded ? '▼' : '▶'}</span>
+        <td className="px-3 py-2.5">
+          <span className="text-slate-500 text-xs">{isExpanded ? '▼' : '▶'}</span>
         </td>
       </tr>
       {isExpanded && (
-        <tr className="bg-slate-50 border-b border-slate-100">
-          <td colSpan={5} className="px-3.5 py-4">
-            <div className="bg-white border border-slate-200 rounded-lg p-3 space-y-3">
+        <tr className="bg-slate-800 border-b border-slate-700">
+          <td colSpan={5} className="px-3 py-3">
+            <div className="bg-slate-900 border border-slate-700 rounded-lg p-3 space-y-2.5">
               <div>
-                <p className="text-xs font-bold text-slate-500 mb-1">Problem Statement</p>
-                <p className="text-xs text-slate-700 leading-relaxed">
+                <p className="text-xs font-bold text-slate-400 mb-1">Problem</p>
+                <p className="text-xs text-slate-300 leading-relaxed">
                   {incident.problem_statement}
                 </p>
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-500 mb-1">Root Cause</p>
-                <p className="text-xs text-slate-700 leading-relaxed">
-                  <strong className="text-blue-900">Root Cause:</strong> {incident.root_cause}
+                <p className="text-xs font-bold text-slate-400 mb-1">Root Cause</p>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  {incident.root_cause}
                 </p>
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-500 mb-1">Remediation Steps</p>
-                <p className="text-xs text-slate-700 leading-relaxed">
-                  <strong className="text-blue-900">Steps:</strong> {incident.remediation_steps}
+                <p className="text-xs font-bold text-slate-400 mb-1">Remediation</p>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  {incident.remediation_steps}
                 </p>
               </div>
             </div>

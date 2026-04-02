@@ -1,14 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import Header from '@/components/Header'
-import InputPanel from '@/components/InputPanel'
-import CategoryCard from '@/components/CategoryCard'
-import SeverityCard from '@/components/SeverityCard'
-import RetrievalCard from '@/components/RetrievalCard'
-import RemediationCard from '@/components/RemediationCard'
-import IncidentTable from '@/components/IncidentTable'
-import AIReasoningPanel from '@/components/AIReasoningPanel'
+import { useState } from 'react'
+import DashboardLayout from '@/components/DashboardLayout'
 import Toast from '@/components/Toast'
 
 interface PredictionResult {
@@ -130,83 +123,14 @@ export default function Page() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col">
-      <Header
-        timestamp={result?.timestamp}
+    <>
+      <DashboardLayout
+        result={result}
+        loading={loading}
         latency={latency}
+        onPredict={handlePredict}
         onExport={handleExport}
       />
-
-      <main className="flex-1 p-4 overflow-hidden flex flex-col">
-        {/* Top Section: Three-Column Layout */}
-        <div className="grid grid-cols-3 gap-3 mb-3 flex-1 overflow-hidden">
-          {/* Column 1: Incident Input */}
-          <div className="overflow-hidden">
-            <InputPanel
-              onPredict={handlePredict}
-              loading={loading}
-              severity={result ? getSeverityStatus(result.predicted_severity) : 'normal'}
-            />
-          </div>
-
-          {/* Column 2: AI Reasoning Summary */}
-          <div className="overflow-hidden">
-            {result && (
-              <AIReasoningPanel reasoning={result.llm_response} />
-            )}
-          </div>
-
-          {/* Column 3: Right Panel Stack (Category, Severity, Retrieval) */}
-          <div className="grid grid-rows-[auto_auto_auto] gap-3 overflow-hidden">
-            {/* Top: Predicted Category */}
-            {result && (
-              <div className="overflow-hidden">
-                <CategoryCard
-                  category={result.predicted_category}
-                  categoryConfidence={result.category_confidence}
-                />
-              </div>
-            )}
-
-            {/* Middle: Predicted Severity */}
-            {result && (
-              <div className="overflow-hidden">
-                <SeverityCard
-                  severity={result.predicted_severity}
-                  confidence={result.severity_confidence}
-                />
-              </div>
-            )}
-
-            {/* Bottom: Retrieval Generation */}
-            {result && (
-              <div className="overflow-hidden">
-                <RetrievalCard
-                  incidentCount={result.similar_incidents.length}
-                />
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Bottom Section: Remediation and Incidents Table */}
-        {result && (
-          <div className="grid grid-cols-2 gap-3 flex-1 overflow-hidden">
-            {/* Left: Remediation Card */}
-            <div className="overflow-hidden">
-              <RemediationCard remediation={result.llm_response} />
-            </div>
-
-            {/* Right: Similar Incidents Table */}
-            <div className="overflow-hidden">
-              <IncidentTable
-                incidents={result.similar_incidents}
-              />
-            </div>
-          </div>
-        )}
-      </main>
-
       {toast && (
         <Toast
           message={toast.message}
@@ -214,6 +138,6 @@ export default function Page() {
           onClose={() => setToast(null)}
         />
       )}
-    </div>
+    </>
   )
 }
