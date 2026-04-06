@@ -14,12 +14,13 @@ interface InputPanelProps {
   }) => void
   loading: boolean
   severity: 'critical' | 'warning' | 'normal'
+  theme?: 'light' | 'dark'
 }
 
 const EXAMPLE_STATEMENT =
   'Advisors are isolated from Network and IPs not getting assigned to systems at Gurgaon 398 for Amazon process'
 
-export default function InputPanel({ onPredict, loading, severity }: InputPanelProps) {
+export default function InputPanel({ onPredict, loading, severity, theme = 'dark' }: InputPanelProps) {
   const [problemStatement, setProblemStatement] = useState(EXAMPLE_STATEMENT)
   const [location, setLocation] = useState('Gurgaon 398')
   const [process, setProcess] = useState('Amazon')
@@ -51,11 +52,19 @@ export default function InputPanel({ onPredict, loading, severity }: InputPanelP
     })
   }
 
+  const bgColor = theme === 'dark' ? 'bg-slate-900' : 'bg-slate-50'
+  const headerBg = theme === 'dark' ? 'bg-slate-800' : 'bg-slate-100'
+  const headerBorder = theme === 'dark' ? 'border-slate-700' : 'border-slate-200'
+  const inputBg = theme === 'dark' ? 'bg-slate-800' : 'bg-white'
+  const inputBorder = theme === 'dark' ? 'border-slate-700' : 'border-slate-300'
+  const inputText = theme === 'dark' ? 'text-slate-200' : 'text-slate-900'
+  const labelText = theme === 'dark' ? 'text-slate-400' : 'text-slate-600'
+
   return (
     <div className="h-full flex flex-col">
       {/* Panel Header */}
-      <div className="flex items-center justify-between px-4 py-3 bg-slate-800 border-b border-slate-700">
-        <h2 className="text-xs font-bold text-slate-200 uppercase tracking-wide">Incident Input</h2>
+      <div className={`flex items-center justify-between px-4 py-3 ${headerBg} border-b ${headerBorder}`}>
+        <h2 className={`text-xs font-bold uppercase tracking-wide ${theme === 'dark' ? 'text-slate-200' : 'text-slate-900'}`}>Incident Input</h2>
         <span
           className={`inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-md border ${getSeverityColor()}`}
         >
@@ -65,14 +74,18 @@ export default function InputPanel({ onPredict, loading, severity }: InputPanelP
       </div>
 
       {/* Panel Body */}
-      <div className="flex-1 p-4 overflow-y-auto bg-slate-900">
+      <div className={`flex-1 p-4 overflow-y-auto ${bgColor}`}>
         {/* Problem Statement */}
         <div className="mb-3">
-          <label className="text-xs font-semibold text-slate-400 mb-1.5 block">Incident Statement</label>
+          <label className={`text-xs font-semibold ${labelText} mb-1.5 block`}>Incident Statement</label>
           <textarea
             value={problemStatement}
             onChange={(e) => setProblemStatement(e.target.value)}
-            className="w-full h-20 p-2.5 border border-slate-700 rounded-lg bg-slate-800 text-sm text-slate-200 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none placeholder:text-slate-500"
+            className={`w-full h-20 p-2.5 border rounded-lg text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none ${
+              theme === 'dark'
+                ? 'border-slate-700 bg-slate-800 text-slate-200 placeholder:text-slate-500'
+                : 'border-slate-300 bg-white text-slate-900 placeholder:text-slate-400'
+            }`}
             style={{ fontFamily: 'inherit' }}
             placeholder="Describe the incident..."
           />
@@ -82,11 +95,15 @@ export default function InputPanel({ onPredict, loading, severity }: InputPanelP
         <div className="space-y-2.5">
           {/* Location */}
           <div>
-            <label className="text-xs font-semibold text-slate-400 mb-1.5 block">Location</label>
+            <label className={`text-xs font-semibold ${labelText} mb-1.5 block`}>Location</label>
             <select
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              className="w-full px-2.5 py-2 border border-slate-700 rounded-lg bg-slate-800 text-sm text-slate-200 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className={`w-full px-2.5 py-2 border rounded-lg text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 ${
+                theme === 'dark'
+                  ? 'border-slate-700 bg-slate-800 text-slate-200'
+                  : 'border-slate-300 bg-white text-slate-900'
+              }`}
             >
               <option>Gurgaon 398</option>
               <option>Gurgaon 94-95</option>
@@ -97,11 +114,15 @@ export default function InputPanel({ onPredict, loading, severity }: InputPanelP
 
           {/* Process */}
           <div>
-            <label className="text-xs font-semibold text-slate-400 mb-1.5 block">Process</label>
+            <label className={`text-xs font-semibold ${labelText} mb-1.5 block`}>Process</label>
             <select
               value={process}
               onChange={(e) => setProcess(e.target.value)}
-              className="w-full px-2.5 py-2 border border-slate-700 rounded-lg bg-slate-800 text-sm text-slate-200 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className={`w-full px-2.5 py-2 border rounded-lg text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 ${
+                theme === 'dark'
+                  ? 'border-slate-700 bg-slate-800 text-slate-200'
+                  : 'border-slate-300 bg-white text-slate-900'
+              }`}
             >
               <option>Amazon</option>
               <option>HP</option>
@@ -112,11 +133,15 @@ export default function InputPanel({ onPredict, loading, severity }: InputPanelP
 
           {/* Hour */}
           <div>
-            <label className="text-xs font-semibold text-slate-400 mb-1.5 block">Hour of Day</label>
+            <label className={`text-xs font-semibold ${labelText} mb-1.5 block`}>Hour of Day</label>
             <select
               value={hour}
               onChange={(e) => setHour(parseInt(e.target.value))}
-              className="w-full px-2.5 py-2 border border-slate-700 rounded-lg bg-slate-800 text-sm text-slate-200 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className={`w-full px-2.5 py-2 border rounded-lg text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 ${
+                theme === 'dark'
+                  ? 'border-slate-700 bg-slate-800 text-slate-200'
+                  : 'border-slate-300 bg-white text-slate-900'
+              }`}
             >
               {Array.from({ length: 24 }, (_, i) => (
                 <option key={i} value={i}>
@@ -128,11 +153,15 @@ export default function InputPanel({ onPredict, loading, severity }: InputPanelP
 
           {/* Top K */}
           <div>
-            <label className="text-xs font-semibold text-slate-400 mb-1.5 block">Similar Incidents</label>
+            <label className={`text-xs font-semibold ${labelText} mb-1.5 block`}>Similar Incidents</label>
             <select
               value={topK}
               onChange={(e) => setTopK(parseInt(e.target.value))}
-              className="w-full px-2.5 py-2 border border-slate-700 rounded-lg bg-slate-800 text-sm text-slate-200 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              className={`w-full px-2.5 py-2 border rounded-lg text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 ${
+                theme === 'dark'
+                  ? 'border-slate-700 bg-slate-800 text-slate-200'
+                  : 'border-slate-300 bg-white text-slate-900'
+              }`}
             >
               <option value={1}>Top 1</option>
               <option value={2}>Top 2</option>
@@ -156,7 +185,7 @@ export default function InputPanel({ onPredict, loading, severity }: InputPanelP
         </button>
 
         {/* Note */}
-        <p className="text-xs text-slate-500 mt-3 leading-relaxed">
+        <p className={`text-xs mt-3 leading-relaxed ${theme === 'dark' ? 'text-slate-500' : 'text-slate-600'}`}>
           AI-powered incident triage using ML models for category prediction and retrieval-augmented generation
         </p>
       </div>

@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { Activity, Hop as Home, ChartBar as BarChart3, Settings, FileText, Clock, Download } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Activity, Hop as Home, ChartBar as BarChart3, Settings, FileText, Clock, Download, Moon, Sun } from 'lucide-react'
 import InputPanel from '@/components/InputPanel'
 import CategoryCard from '@/components/CategoryCard'
 import SeverityCard from '@/components/SeverityCard'
@@ -26,13 +26,41 @@ export default function DashboardLayout({
   onExport,
 }: DashboardLayoutProps) {
   const [currentTime, setCurrentTime] = useState(new Date().toLocaleTimeString('en-US', { hour12: false }))
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark')
+  const [mounted, setMounted] = useState(false)
 
-  useState(() => {
+  useEffect(() => {
+    setMounted(true)
+    const stored = localStorage.getItem('noc-theme') as 'light' | 'dark' | null
+    const initial = stored || 'dark'
+    setTheme(initial)
+    applyTheme(initial)
+  }, [])
+
+  useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTime(new Date().toLocaleTimeString('en-US', { hour12: false }))
     }, 1000)
     return () => clearInterval(interval)
-  })
+  }, [])
+
+  const applyTheme = (newTheme: 'light' | 'dark') => {
+    const root = document.documentElement
+    if (newTheme === 'dark') {
+      root.classList.add('dark')
+      root.style.colorScheme = 'dark'
+    } else {
+      root.classList.remove('dark')
+      root.style.colorScheme = 'light'
+    }
+    localStorage.setItem('noc-theme', newTheme)
+  }
+
+  const toggleTheme = () => {
+    const newTheme = theme === 'dark' ? 'light' : 'dark'
+    setTheme(newTheme)
+    applyTheme(newTheme)
+  }
 
   const getSeverityStatus = (severity: string) => {
     if (severity === 'P1' || severity === 'Critical') return 'critical'
@@ -40,30 +68,54 @@ export default function DashboardLayout({
     return 'normal'
   }
 
+  if (!mounted) return null
+
+  const bgColor = theme === 'dark' ? 'bg-slate-950' : 'bg-slate-50'
+  const navColor = theme === 'dark' ? 'bg-slate-900' : 'bg-white'
+  const borderColor = theme === 'dark' ? 'border-slate-800' : 'border-slate-200'
+  const textColor = theme === 'dark' ? 'text-white' : 'text-slate-900'
+  const secondaryText = theme === 'dark' ? 'text-slate-400' : 'text-slate-600'
+
   return (
-    <div className="h-screen flex flex-col bg-slate-950 overflow-hidden">
+    <div className={`h-screen flex flex-col ${bgColor} overflow-hidden`}>
       {/* Top Navigation Bar */}
-      <nav className="h-14 bg-slate-900 border-b border-slate-800 flex items-center px-4 shrink-0">
+      <nav className={`h-14 ${navColor} border-b ${borderColor} flex items-center px-4 shrink-0`}>
         <div className="flex items-center gap-3 flex-1">
           <div className="flex items-center gap-2">
             <Activity className="w-5 h-5 text-blue-500" />
-            <span className="text-base font-bold text-white tracking-tight">NOC-GPT</span>
+            <span className={`text-base font-bold tracking-tight ${textColor}`}>NOC-GPT</span>
           </div>
-          <div className="h-6 w-px bg-slate-700" />
+          <div className={`h-6 w-px ${theme === 'dark' ? 'bg-slate-700' : 'bg-slate-300'}`} />
           <div className="flex items-center gap-1">
-            <button className="px-3 py-1.5 rounded-md bg-slate-800 text-slate-100 text-xs font-medium flex items-center gap-2 hover:bg-slate-700 transition-colors">
+            <button className={`px-3 py-1.5 rounded-md text-xs font-medium flex items-center gap-2 transition-colors ${
+              theme === 'dark'
+                ? 'bg-slate-800 text-slate-100 hover:bg-slate-700'
+                : 'bg-slate-100 text-slate-900 hover:bg-slate-200'
+            }`}>
               <Home className="w-3.5 h-3.5" />
               Dashboard
             </button>
-            <button className="px-3 py-1.5 rounded-md text-slate-400 text-xs font-medium flex items-center gap-2 hover:bg-slate-800 hover:text-slate-100 transition-colors">
+            <button className={`px-3 py-1.5 rounded-md text-xs font-medium flex items-center gap-2 transition-colors ${
+              theme === 'dark'
+                ? 'text-slate-400 hover:bg-slate-800 hover:text-slate-100'
+                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+            }`}>
               <BarChart3 className="w-3.5 h-3.5" />
               Analytics
             </button>
-            <button className="px-3 py-1.5 rounded-md text-slate-400 text-xs font-medium flex items-center gap-2 hover:bg-slate-800 hover:text-slate-100 transition-colors">
+            <button className={`px-3 py-1.5 rounded-md text-xs font-medium flex items-center gap-2 transition-colors ${
+              theme === 'dark'
+                ? 'text-slate-400 hover:bg-slate-800 hover:text-slate-100'
+                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+            }`}>
               <FileText className="w-3.5 h-3.5" />
               Reports
             </button>
-            <button className="px-3 py-1.5 rounded-md text-slate-400 text-xs font-medium flex items-center gap-2 hover:bg-slate-800 hover:text-slate-100 transition-colors">
+            <button className={`px-3 py-1.5 rounded-md text-xs font-medium flex items-center gap-2 transition-colors ${
+              theme === 'dark'
+                ? 'text-slate-400 hover:bg-slate-800 hover:text-slate-100'
+                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+            }`}>
               <Settings className="w-3.5 h-3.5" />
               Settings
             </button>
@@ -72,15 +124,38 @@ export default function DashboardLayout({
 
         <div className="flex items-center gap-3">
           {latency > 0 && (
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-800 border border-slate-700">
+            <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md border ${
+              theme === 'dark'
+                ? 'bg-slate-800 border-slate-700'
+                : 'bg-slate-100 border-slate-300'
+            }`}>
               <Clock className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="text-xs text-slate-300 font-medium">{latency}ms</span>
+              <span className={`text-xs font-medium ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>{latency}ms</span>
             </div>
           )}
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-800 border border-slate-700">
+          <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md border ${
+            theme === 'dark'
+              ? 'bg-slate-800 border-slate-700'
+              : 'bg-slate-100 border-slate-300'
+          }`}>
             <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-xs text-slate-300 font-medium">{currentTime}</span>
+            <span className={`text-xs font-medium ${theme === 'dark' ? 'text-slate-300' : 'text-slate-600'}`}>{currentTime}</span>
           </div>
+          <button
+            onClick={toggleTheme}
+            className={`p-2 rounded-lg border transition-all ${
+              theme === 'dark'
+                ? 'bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700 hover:text-slate-200'
+                : 'bg-slate-100 border-slate-300 text-slate-600 hover:bg-slate-200 hover:text-slate-900'
+            }`}
+            title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+          >
+            {theme === 'dark' ? (
+              <Sun className="w-4 h-4" />
+            ) : (
+              <Moon className="w-4 h-4" />
+            )}
+          </button>
           <button
             onClick={onExport}
             className="px-3 py-1.5 rounded-md bg-blue-600 text-white text-xs font-semibold flex items-center gap-1.5 hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -95,12 +170,13 @@ export default function DashboardLayout({
       {/* Main Content Area */}
       <div className="flex-1 flex overflow-hidden">
         {/* Left Sidebar - Input Panel */}
-        <aside className="w-80 bg-slate-900 border-r border-slate-800 flex flex-col shrink-0">
+        <aside className={`w-80 ${theme === 'dark' ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'} border-r flex flex-col shrink-0`}>
           <div className="flex-1 overflow-y-auto">
             <InputPanel
               onPredict={onPredict}
               loading={loading}
               severity={result ? getSeverityStatus(result.predicted_severity) : 'normal'}
+              theme={theme}
             />
           </div>
         </aside>
